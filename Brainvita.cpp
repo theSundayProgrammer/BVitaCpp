@@ -189,31 +189,27 @@ int count = 32;
 std::stack<moveAction> moves;
 bool  BVMove(BoardGame const& game, moveAction const& act)
 {
+	if (count == 1)
+	{
+		return true;
+	}
 	moveAction next = game.findMove(act);
+	--count;
 	while (next != invalid)
 	{
 		int d, i, j;
 		std::tie(d, i, j) = next;
 		BoardGame newBoard(game);
 		newBoard.move(dirs[d], i, j);
-		--count;
-		if (count == 1)
+		if (BVMove(newBoard, moveAction(0, 0, 0)))
 		{
 			moves.push(next);
 			return true;
 		}
-		else if (BVMove(newBoard, moveAction(0, 0, 0)))
-		{
-			moves.push(next);
-			return true;
-		}
-		else
-		{
-			++count;
-			next = game.incr(next);
-			next = game.findMove(next);
-		}
+		next = game.incr(next);
+		next = game.findMove(next);
 	}
+	++count;
 	return false;
 }
 const char* DirStr(int d)

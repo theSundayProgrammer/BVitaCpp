@@ -190,7 +190,7 @@ std::stack<moveAction> moves;
 bool  BVMove(BoardGame const& game, moveAction const& act)
 {
 	moveAction next = game.findMove(act);
-	if (next != invalid)
+	while (next != invalid)
 	{
 		int d, i, j;
 		std::tie(d, i, j) = next;
@@ -211,11 +211,10 @@ bool  BVMove(BoardGame const& game, moveAction const& act)
 		{
 			++count;
 			next = game.incr(next);
-			return BVMove(game, next);
+			next = game.findMove(next);
 		}
 	}
-	else
-		return false;
+	return false;
 }
 const char* DirStr(int d)
 {

@@ -181,20 +181,29 @@ public:
 		return invalid;
 
 	}
-
+	bool isBoardCountOne() const
+	{
+		int k = 0;
+		for (int i = 0; i < 7; ++i)
+			for (int j = 0; j < 7; ++j)
+				if (board[i][j])
+					if (++k > 1) 
+						return false;
+		return board[3][3];
+	}
 };
 
 
-int count = 32;
+
 std::stack<moveAction> moves;
 bool  BVMove(BoardGame const& game, moveAction const& act)
 {
-	if (count == 1)
+	if (game.isBoardCountOne())
 	{
 		return true;
 	}
 	moveAction next = game.findMove(act);
-	--count;
+
 	while (next != invalid)
 	{
 		int d, i, j;
@@ -209,9 +218,9 @@ bool  BVMove(BoardGame const& game, moveAction const& act)
 		next = game.incr(next);
 		next = game.findMove(next);
 	}
-	++count;
+
 	return false;
-}
+} 
 const char* DirStr(int d)
 {
 	switch (dirs[d])

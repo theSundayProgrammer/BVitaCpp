@@ -1,20 +1,7 @@
 // Brainvita.cpp : Defines the entry point for the console application.
 //
 
-/*
-Module JoeChakra.BrainVita
-open Microsoft.FSharp.Math
-open Microsoft.FSharp.Collections
-open System.Collections.Generic;
-let IsValid i j =
-(i>=2 && i<=4 && j>=0 && j<7) ||
-(j>=2 && j<=4 && i>=0 && i<7)
-*/
 
-/*
-let board = Array2D.init 7 7 (fun i j ->
-(IsValid i j) && not (i=3 && j=3) )
-*/
 #include <iostream>
 #include <tuple>
 #include <vector>
@@ -28,8 +15,8 @@ enum Direction
 	West,
 	North
 };
-//const std::vector<Direction> dirs = { East, South, West, North };
-Direction dirs[] = { East, South, West, North };
+//const std::vector<Direction> dirs =  { North,West,South,East };
+Direction dirs[] = {  East, South, West,North };
 class BoardGame
 {
 	bool board[7][7];
@@ -63,13 +50,7 @@ public:
 			return std::make_tuple(0, 0, j + 1);
 
 	}
-	/*
-	let movableX i x y =
-	board.[x,y] && board.[x+i,y] && not board.[x+2*i,y]
-
-	let movableY j x y =
-	board.[x,y] && board.[x,y+j] && not board.[x,y+2*j]
-	*/
+	
 
 	bool movableX(int i, int x, int y) const
 	{
@@ -80,14 +61,7 @@ public:
 	{
 		return	board[x][y] && board[x][y + j] && !board[x][y + 2 * j];
 	}
-	/*
-	let moveX i x y =
-	board.[x,y] <- false
-	board.[x+i,y] <- false
-	board.[x+2*i,y] <- true
-	true
 
-	*/
 	bool moveX(int i, int x, int y)
 	{
 		board[x][y] = false;
@@ -96,13 +70,7 @@ public:
 		return true;
 	}
 
-	/*
-	let moveY j x y =
-	board.[x,y] <- false
-	board.[x,y+j] <- false
-	board.[x,y+2*j] <- true
-	true
-	*/
+
 	bool  moveY(int j, int  x, int y)
 	{
 		board[x][y] = false;
@@ -114,17 +82,6 @@ public:
 
 
 
-	/*
-	let isMovable d x y =
-	if IsValid x y then
-	match d with
-	| East -> (IsValid (x+2) y) && (movableX 1 x y)
-	| West -> (IsValid (x-2) y) && (movableX -1 x y)
-	| South -> (IsValid x (y+2)) && (movableY 1 x y)
-	| North -> (IsValid x (y-2))  && (movableY -1 x y)
-	else
-	false
-	*/
 
 	bool isMovable(Direction d, int  x, int y) const
 	{
@@ -143,14 +100,7 @@ public:
 			return false;
 	}
 
-	/*
-	let move d x y =
-	match d with
-	| East ->  (moveX 1 x y)
-	| West ->  (moveX -1 x y)
-	| South -> (moveY 1 x y)
-	| North -> (moveY -1 x y)
-	*/
+
 	void move(Direction d, int x, int y)
 	{
 		switch (d)
@@ -158,7 +108,7 @@ public:
 		case East:  moveX(1, x, y); return;
 		case West:  moveX(-1, x, y);  return;
 		case South:  moveY(1, x, y); return;
-		case North:  moveY(-1, x, y);;
+		case North:  moveY(-1, x, y);
 		}
 
 	}

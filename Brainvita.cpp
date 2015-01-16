@@ -196,7 +196,7 @@ public:
 
 
 std::stack<moveAction> moves;
-bool  BVMove(BoardGame const& game, moveAction const& act)
+bool  Solver(BoardGame const& game, moveAction const& act)
 {
 	if (game.isBoardCountOne())
 	{
@@ -210,7 +210,7 @@ bool  BVMove(BoardGame const& game, moveAction const& act)
 		std::tie(d, i, j) = next;
 		BoardGame newBoard(game);
 		newBoard.move(dirs[d], i, j);
-		if (BVMove(newBoard, moveAction(0, 0, 0)))
+		if (Solver(newBoard, moveAction(0, 0, 0)))
 		{
 			moves.push(next);
 			return true;
@@ -232,18 +232,21 @@ const char* DirStr(int d)
 	default: return "unknown";
 	}
 }
-
-int main(int argc, char* argv[])
+void printOutput()
 {
-	BoardGame game;
-	BVMove(game, std::make_tuple(0, 0, 0));
 	auto result = moves._Get_container();
-	for (auto mov : result )
+	for (auto mov : result)
 	{
 		int d, i, j;
 		std::tie(d, i, j) = mov;
 		std::cout << DirStr(d) << "," << i << "," << j << std::endl;
 	}
+}
+int main(int argc, char* argv[])
+{
+	BoardGame game;
+	Solver (game, std::make_tuple(0, 0, 0));
+	printOutput();
 	return 0;
 }
 

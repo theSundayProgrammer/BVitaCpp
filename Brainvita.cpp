@@ -33,24 +33,32 @@ class BoardGame
 				board[i][j] = IsValid(i, j) && !(i == 3 && j == 3);
 			}
 	}
-public:
-	BoardGame()
-	{
-		initboard();
-	}
+
 	moveAction incr(moveAction const& act) const
 	{
 		int d, i, j;
 		std::tie(d, i, j) = act;
 		if (d < 3)
 			return std::make_tuple(d + 1, i, j);
-		else if (i < 6) 
+		else if (i < 6)
 			return std::make_tuple(0, i + 1, j);
-		else
+		else if ( j<6 )
 			return std::make_tuple(0, 0, j + 1);
+		else 
+			return invalid;
 
 	}
-	
+	void move(Direction d, int x, int y)
+	{
+		switch (d)
+		{
+		case East:  moveX(1, x, y); return;
+		case West:  moveX(-1, x, y);  return;
+		case South:  moveY(1, x, y); return;
+		case North:  moveY(-1, x, y);
+		}
+
+	}
 
 	bool movableX(int i, int x, int y) const
 	{
@@ -79,10 +87,6 @@ public:
 		return	true;
 	}
 
-
-
-
-
 	bool isMovable(Direction d, int  x, int y) const
 	{
 		if (IsValid(x, y))
@@ -100,35 +104,29 @@ public:
 			return false;
 	}
 
-
-	void move(Direction d, int x, int y)
+public:
+	BoardGame()
 	{
-		switch (d)
-		{
-		case East:  moveX(1, x, y); return;
-		case West:  moveX(-1, x, y);  return;
-		case South:  moveY(1, x, y); return;
-		case North:  moveY(-1, x, y);
-		}
-
+		initboard();
 	}
-	moveAction findMove(moveAction const& act) const
+
+
+	moveAction findFirstMove() const
 	{
-		int d, i, j;
-		std::tie(d, i, j) = act;
-		if (j < 7)
+		return findNextMove(moveAction(0, 0, 0));
+	}
+	moveAction findNextMove(moveAction const& act) const
+	{
+		moveAction next = incr(act);
+		while (next != invalid)
 		{
+			int d, i, j;
+			std::tie(d, i, j) = next;
 			if (isMovable(dirs[d], i, j))
-			{
-				return act;
-			}
-			else
-			{
-				moveAction next = incr(act);
-				return findMove(next);
-			}
+				return  next;
+			next = incr(next);	
 		}
-		return invalid;
+		return next;
 
 	}
 	bool isBoardCountOne() const
@@ -141,32 +139,35 @@ public:
 						return false;
 		return board[3][3];
 	}
+	BoardGame move(moveAction const& act) const
+	{
+		int d, i, j;
+		std::tie(d, i, j) = act;
+		BoardGame newBoard(*this);
+		newBoard.move(dirs[d], i, j);
+		return newBoard;
+	}
 };
 
 
 
 std::stack<moveAction> moves;
-bool  Solver(BoardGame const& game, moveAction const& act)
+bool  Solver(BoardGame const& game)
 {
 	if (game.isBoardCountOne())
 	{
 		return true;
 	}
-	moveAction next = game.findMove(act);
+	moveAction next = game.findFirstMove();
 
 	while (next != invalid)
 	{
-		int d, i, j;
-		std::tie(d, i, j) = next;
-		BoardGame newBoard(game);
-		newBoard.move(dirs[d], i, j);
-		if (Solver(newBoard, moveAction(0, 0, 0)))
+		if (Solver(game.move(next)))
 		{
 			moves.push(next);
 			return true;
 		}
-		next = game.incr(next);
-		next = game.findMove(next);
+		next = game.findNextMove(next);
 	}
 
 	return false;
@@ -195,7 +196,7 @@ void printOutput()
 int main(int argc, char* argv[])
 {
 	BoardGame game;
-	Solver (game, std::make_tuple(0, 0, 0));
+	Solver (game);
 	printOutput();
 	return 0;
 }

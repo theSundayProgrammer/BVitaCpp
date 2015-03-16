@@ -186,11 +186,13 @@ const char* DirStr(int d)
 void printOutput()
 {
 	auto result = moves._Get_container();
-	for (auto mov : result)
+	auto it = result.rbegin();
+	auto fin = result.rend();
+	for (; it != fin;++it)
 	{
 		int d, i, j;
-		std::tie(d, i, j) = mov;
-		std::cout << DirStr(d) << "," << i << "," << j << std::endl;
+		std::tie(d, i, j) = *it;
+		std::cout << i << "," << j << "," << DirStr(d) << std::endl;
 	}
 }
 int main(int argc, char* argv[])

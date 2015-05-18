@@ -1,3 +1,4 @@
-This is a C++ implementation of the F# code found in:
-http://wp.me/p1jqD8-k
+# BrainVita
+The C++ implementation of the [BrainVita Solution](http://thesundayprogrammer.com/2011/03/19/brainvita-solution/)
+
 
